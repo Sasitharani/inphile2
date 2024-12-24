@@ -6,7 +6,12 @@ module.exports = {
     './app/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        customBackground: '#ffffff', // Change custom background color to white
+        customFont: '#000000', // Change custom font color to black
+      },
+    },
   },
   plugins: [],
 };
