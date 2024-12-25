@@ -2,10 +2,10 @@
 import 'tailwindcss/tailwind.css';
 import { useState, useEffect } from 'react';
 import FeedbackForm from './FeedbackForm';
-import { FaPhone, FaEnvelope, FaMapMarkerAlt } from 'react-icons/fa';
+import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaPhoneAlt } from 'react-icons/fa';
 import { MdOutlineContactPhone } from 'react-icons/md';
 import FourStep from './FourStep';
-
+import Head from 'next/head';
 
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -83,11 +83,17 @@ export default function Home() {
   }, []);
 
   const handleBookCallClick = () => {
-    document.getElementById('feedback').scrollIntoView({ behavior: 'smooth' });
+    const feedbackDiv = document.getElementById('feedback');
+    if (feedbackDiv) {
+      feedbackDiv.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   return (
     <>
+      <Head>
+        <title>Insphile Management Solutions</title>
+      </Head>
       <style jsx global>{`
         html {
           scroll-behavior: smooth;
@@ -220,7 +226,7 @@ export default function Home() {
           >
             <div className="absolute inset-0 bg-cover bg-center bg-fixed"></div>
             <div className="absolute inset-0  opacity-50"></div>
-            <div className="absolute left-0 ml-4 mb-96 flex flex-col items-start justify-center h-50 w-85 p-4">
+            <div className="absolute left-0 ml-4 mt-5 mb-96 flex flex-col items-start justify-center h-50 w-85 p-4">
               <p className="text-[8px] text-black">INSPHILE</p>
               <p className="text-[8px] text-black">MANAGEMENT</p>
               <p className="text-[8px] text-black">SOLUTIONS</p>
@@ -230,7 +236,7 @@ export default function Home() {
               id="bridging"
             >
               <div className="flex flex-row w-full items-center">
-                <div className="w-1/3 ">
+                <div className="w-1/3">
                   <div
                     className="ml-4 h-50 w-85 p-4 bg-white bg-opacity-35"
                     id="bridging"
@@ -267,7 +273,7 @@ export default function Home() {
               </div>
             </div>
             <div
-              className="absolute left-0 ml-28 mt-72 p-4 bg-transparent"
+              className="absolute left-0 ml-28 mt-72 p-4 bg-transparent z-20"
               id="callButton"
             >
               <button className="px-4 py-2 bg-rose-100 text-black rounded-2xl" onClick={handleBookCallClick}>
@@ -376,7 +382,7 @@ export default function Home() {
               <div id="feedback" className="w-full md:w-1/3 p-4 relative">
                 <FeedbackForm />
               </div>
-              <div className="w-1/3 h-full md:w-1/2 m-5 p-4 bg-gray-200 bg-opacity-5 rounded-2xl border-2 relative" id="text">
+              <div className="w-1/3 h-full md:w-1/2 m-5 p-4 bg-transparent rounded-2xl border-2 relative" id="text">
                 <div id="textContact" className="p-4">
                   <h2 className="text-2xl font-bold mb-4 flex items-center">
                     <MdOutlineContactPhone className="mr-2" />
@@ -410,6 +416,14 @@ export default function Home() {
               </div>
             </div>
           </div>
+        </div>
+        <div className="fixed bottom-4 right-4 z-30">
+          <button
+            className="p-3 bg-blue-500 text-white rounded-full shadow-lg"
+            onClick={handleBookCallClick}
+          >
+            <FaPhoneAlt size={24} />
+          </button>
         </div>
       </div>
     </>
