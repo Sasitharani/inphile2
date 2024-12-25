@@ -27,6 +27,20 @@ const FeedbackForm = () => {
     const selectedFile = e.target.files[0];
     if (!selectedFile) return;
 
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    if (!allowedTypes.includes(selectedFile.type)) {
+      setError('Invalid file type. Please upload a jpeg, png, gif, pdf, doc, or docx file.');
+      setMessageText('Load only (jpeg/png/pdf/word/gif files)');
+      return;
+    }
+
+    const maxSize = 1 * 1024 * 1024; // 1 MB
+    if (selectedFile.size > maxSize) {
+      setError('File size exceeds 1 MB. Please upload a smaller file.');
+      setMessageText('File size should be less than 1 MB');
+      return;
+    }
+
     console.log('Attempting file upload to:', 'https://test.insphile.in/upload.php');
     
     setFileLoading(true);
@@ -38,17 +52,9 @@ const FeedbackForm = () => {
     fetch('https://test.insphile.in/upload.php', {
       method: 'POST',
       body: formData,
-      mode: 'no-cors' // Add this line to disable CORS
+      mode: 'no-cors'
     })
-      .then(response => {
-        console.log('Upload response status:', response.status);
-        if (!response.ok) {
-          return response.json().then(errorData => {
-            throw new Error(errorData.error || 'File upload failed');
-          });
-        }
-        return response.json();
-      })
+  
       .then(data => {
         console.log('Upload response data:', data);
         setFilePath(data.path);
@@ -96,7 +102,8 @@ const FeedbackForm = () => {
 
   const sendForm = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/email`, {
+      console.log('Attempting to send form data to:', 'https://test.insphile.in/api/send-email');
+      const response = await fetch('https://test.insphile.in/api/send-email', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -109,11 +116,17 @@ const FeedbackForm = () => {
           filePath,
           fileName
         }),
+        redirect: 'follow' // Follow redirects
       });
 
+      const text = await response.text();
+      if (!text) {
+        throw new Error('Empty response body');
+      }
+      const data = JSON.parse(text);
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to send message');
+        throw new Error(data.error || 'Failed to send message');
       }
 
       setSubmitted(true);
@@ -159,10 +172,10 @@ const FeedbackForm = () => {
           <p className="text-white mt-4">Please wait, your message is being sent...</p>
         </div>
       )}
-      <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">Feedback Form######</h2>
+      <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">Contact Form</h2>
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name:#</label>
+          <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name:</label>
           <input
             type="text"
             id="name"
