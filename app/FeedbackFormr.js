@@ -23,48 +23,45 @@ const FeedbackForm = () => {
     console.log('Environment Variables:', process.env);
   }, []);
 
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const selectedFile = e.target.files[0];
     if (!selectedFile) return;
 
-    console.log('Attempting file upload to:', 'https://test.insphile.in/upload.php');
+    console.log('Attempting file upload to:', `${process.env.NEXT_PUBLIC_BASE_URL}/api/upload`);
     
     setFileLoading(true);
 
-    const formData = new FormData();
-    formData.append('file', selectedFile);
-    formData.append('username', name); // Send username
+    try {
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+      formData.append('username', name); // Send username
 
-    fetch('https://test.insphile.in/upload.php', {
-      method: 'POST',
-      body: formData,
-      mode: 'no-cors' // Add this line to disable CORS
-    })
-      .then(response => {
-        console.log('Upload response status:', response.status);
-        if (!response.ok) {
-          return response.json().then(errorData => {
-            throw new Error(errorData.error || 'File upload failed');
-          });
-        }
-        return response.json();
-      })
-      .then(data => {
-        console.log('Upload response data:', data);
-        setFilePath(data.path);
-        setFileName(selectedFile.name);
-        setFile(selectedFile);
-
-        // Display file name in green text
-        setMessageText(`File successfully attached: ${selectedFile.name}`);
-      })
-      .catch(error => {
-        console.error('Error uploading file:', error);
-        setError('Error uploading file');
-      })
-      .finally(() => {
-        setFileLoading(false);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/upload`, {
+        method: 'POST',
+        body: formData,
       });
+
+      console.log('Upload response status:', response.status);
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'File upload failed');
+      }
+
+      const data = await response.json();
+      console.log('Upload response data:', data);
+      setFilePath(data.path);
+      setFileName(selectedFile.name);
+      setFile(selectedFile);
+
+      // Display file name in green text
+      setMessageText(`File successfully attached: ${selectedFile.name}`);
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      setError('Error uploading file');
+    } finally {
+      setFileLoading(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -159,10 +156,10 @@ const FeedbackForm = () => {
           <p className="text-white mt-4">Please wait, your message is being sent...</p>
         </div>
       )}
-      <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">Feedback Form######</h2>
+      <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">Feedback Form</h2>
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name:#</label>
+          <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name:</label>
           <input
             type="text"
             id="name"
