@@ -102,8 +102,8 @@ const FeedbackForm = () => {
 
   const sendForm = async () => {
     try {
-      console.log('Attempting to send form data to:', 'https://test.insphile.in/api/send-email');
-      const response = await fetch('https://test.insphile.in/api/send-email', {
+      console.log('Attempting to send form data to:', '/api/send-email');
+      const response = await fetch('/api/send-email', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -119,11 +119,19 @@ const FeedbackForm = () => {
         redirect: 'follow' // Follow redirects
       });
 
+      console.log('Response status:', response.status);
+      console.log('Response status text:', response.statusText);
+
       const text = await response.text();
       if (!text) {
         throw new Error('Empty response body');
       }
-      const data = JSON.parse(text);
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch (error) {
+        throw new Error('Invalid JSON response');
+      }
 
       if (!response.ok) {
         throw new Error(data.error || 'Failed to send message');

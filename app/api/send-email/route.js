@@ -1,7 +1,17 @@
 import nodemailer from 'nodemailer';
 
 export async function POST(request) {
-  const { name, email, phone, message } = await request.json();
+  console.log('Inside the POST method');
+  let requestData;
+  try {
+    requestData = await request.json();
+  } catch (error) {
+    console.error('Error parsing request JSON:', error);
+    return new Response(JSON.stringify({ message: 'Invalid JSON in request' }), { status: 400 });
+  }
+
+  const { name, email, phone, message } = requestData;
+  console.log('Request data:', { name, email, phone, message });
 
   // Create a transporter object using the default SMTP transport
   let transporter = nodemailer.createTransport({
@@ -42,12 +52,19 @@ export async function POST(request) {
   `;
 
   // Send mail with defined transport object
-  let info = await transporter.sendMail({
-    from: '"Insphile Support" <sasitharani@gmail.com>', // Replace with your email
-    to: "hrd@insphile.in, sasitharani@gmail.com",
-    subject: "New Enquiry from Insphile Website",
-    html: htmlContent,
-  });
+  let info;
+  try {
+    info = await transporter.sendMail({
+      from: '"Insphile Support" <sasitharani@gmail.com>', // Replace with your email
+      to: "hrd@insphile.in, sasitharani@gmail.com",
+      subject: "New Enquiry from Insphile Website",
+      html: htmlContent,
+    });
+    console.log('Email sent:', info.messageId);
+  } catch (error) {
+    console.error('Error sending email:', error);
+    return new Response(JSON.stringify({ message: 'Failed to send email' }), { status: 500 });
+  }
 
   return new Response(JSON.stringify({ message: 'Email sent successfully' }), { status: 200 });
 }
