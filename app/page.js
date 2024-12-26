@@ -93,6 +93,7 @@ export default function Home() {
     <>
       <Head>
         <title>Insphile Management Solutions</title>
+        <link rel="icon" href="/favicon.ico" />
       </Head>
       <style jsx global>{`
         html {

@@ -133,6 +133,8 @@ const FeedbackForm = () => {
         throw new Error('Invalid JSON response');
       }
 
+      console.log('Server log:', data.log); // Log the server message to the browser console
+
       if (!response.ok) {
         throw new Error(data.error || 'Failed to send message');
       }

@@ -7,7 +7,7 @@ export async function POST(request) {
     requestData = await request.json();
   } catch (error) {
     console.error('Error parsing request JSON:', error);
-    return new Response(JSON.stringify({ message: 'Invalid JSON in request' }), { status: 400 });
+    return new Response(JSON.stringify({ message: 'Invalid JSON in request', log: 'Error parsing request JSON' }), { status: 400 });
   }
 
   const { name, email, phone, message } = requestData;
@@ -20,7 +20,7 @@ export async function POST(request) {
     secure: false, // true for 465, false for other ports
     auth: {
       user: 'sasitharani@gmail.com', // Replace with your email
-      pass: 'xwwhhaozejfdiavv', // Replace with your Google App Password
+      pass: 'zfikzmnxyuicssim', // Replace with your Google App Password
     },
   });
 
@@ -63,8 +63,8 @@ export async function POST(request) {
     console.log('Email sent:', info.messageId);
   } catch (error) {
     console.error('Error sending email:', error);
-    return new Response(JSON.stringify({ message: 'Failed to send email' }), { status: 500 });
+    return new Response(JSON.stringify({ message: 'Failed to send email', log: 'Error sending email' }), { status: 500 });
   }
 
-  return new Response(JSON.stringify({ message: 'Email sent successfully' }), { status: 200 });
+  return new Response(JSON.stringify({ message: 'Email sent successfully', log: 'Inside the POST method' }), { status: 200 });
 }
