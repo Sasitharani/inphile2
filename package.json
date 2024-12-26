@@ -12,6 +12,8 @@
   "dependencies": {
     "formidable": "^3.5.2",
     "next": "15.0.2",
+    "node-libs-browser": "^2.2.1",
+    "node-polyfill-webpack-plugin": "^1.1.4",
     "nodemailer": "^6.9.16",
     "react": "19.0.0-rc-02c0e824-20241028",
     "react-dom": "19.0.0-rc-02c0e824-20241028",
